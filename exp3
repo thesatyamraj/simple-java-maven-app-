@@ -1,0 +1,36 @@
+exp 3 
+
+Ubuntu
+
+sudo apt update
+sudo apt install -y openjdk-17-jdk (given)
+java -version
+
+1.2.Download and Install Gradle
+
+sudo apt install unzip -y
+wget https://services.gradle.org/distributions/gradle-8.5-bin.zip (given)
+sudo mkdir /opt/gradle
+sudo unzip -d /opt/gradle gradle-8.5-bin.zip
+
+echo "export PATH=/opt/gradle/gradle-8.5/bin:\$PATH" | sudo tee -a /etc/profile.d/gradle.sh (given)  
+source /etc/profile.d/gradle.sh
+gradle -v
+
+mkdir my-gradle-project && cd my-gradle-project
+gradle init
+	2.application
+	3.java 
+	(default) no
+	2.groovy
+	4.junit Jupiter 
+	name:gradle-demo
+	com.myapp
+	version:17 (default)
+	(default: no) no
+
+gradle build
+gradle run
+gradle test
+gradle tasks
+gradle dependencies
