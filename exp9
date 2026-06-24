@@ -1,0 +1,95 @@
+exp 9,10
+
+
+Experiment 10: Build Pipeline using Azure DevOps and Maven
+
+1. Fork the GitHub repository
+   Go to GitHub and fork this repository:
+   [https://github.com/mvsanthi123/maventestazure](https://github.com/mvsanthi123/maventestazure)
+
+2. Open Azure DevOps
+   Go to [https://dev.azure.com](https://dev.azure.com) and log in with your account
+
+3. Create Organization
+   Click on “New Organization”
+   Enter organization name
+   Click Continue
+
+4. Create Project
+   Click on “New Project”
+   Enter project name (exp10)
+   Select visibility as Private
+   Click Create
+
+5. Create Pipeline
+   Click on Pipelines
+   Click on Create Pipeline
+
+6. Connect GitHub
+   Select GitHub
+   Authorize your GitHub account
+   Select the forked repository (maventestazure)
+
+7. Configure Pipeline
+   Choose Starter Pipeline or YAML option
+   Replace the existing code with the following YAML:
+
+trigger:
+branches:
+include:
+- main
+
+stages:
+
+* stage: __default
+  jobs:
+
+  * job: Job
+    pool:
+    vmImage: ubuntu-latest
+    steps:
+
+    * task: Maven@3
+      inputs:
+      mavenPomFile: 'artifact1/pom.xml'
+      mavenOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '17'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      goals: 'clean package'
+
+    * task: PublishBuildArtifacts@1
+      inputs:
+      PathtoPublish: 'artifact1/target'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'
+
+8. Save and Run
+   Click on Save and Run
+   Select “Commit directly to main branch”
+   Click Run
+
+9. Pipeline Execution
+   The pipeline will start automatically
+   It will perform the following:
+
+* Fetch code from GitHub
+* Run Maven build
+* Execute tests
+* Generate artifact
+
+10. View Results
+    Check pipeline status
+    Ensure the following:
+
+* Build successful
+* Tests passed
+* Artifact generated
+
+11. View Artifact
+    Click on Artifacts (drop)
+    Download or view the generated files
+
+---
