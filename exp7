@@ -52,7 +52,11 @@ nano ~/install_package.yml
         state: present
 
 
+
 ssh ubuntu@node public ip 
+Are you sure you want to continue connecting (yes/no)?Yes
+exit
+
 ansible-playbook -i ~/inventory.ini ~/install_package.yml
 
 
