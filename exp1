@@ -1,0 +1,22 @@
+Exp 1
+
+maven
+=================
+
+Installation of Maven on Linux
+
+Install Java
+
+1) sudo yum update -y
+
+2) sudo yum install java-17-amazon-corretto -y  (given)
+
+3) java -version
+
+Install Maven
+
+4) sudo dnf install -y java-1.8.0-amazon-corretto 
+
+5) sudo yum install maven -y
+
+6) mvn -version
