@@ -1,0 +1,36 @@
+Jenkins Installation on Linux:-
+----------------------------------------
+
+
+1: Update System and Install Java
+
+sudo apt update
+sudo apt install openjdk-21-jdk -y
+java -version
+
+2.Jenkins Installation on Ubuntu (Latest Method)
+
+https://pkg.jenkins.io/
+
+(copy paste all debian-stable)
+
+3: Start and Enable Jenkins
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+sudo systemctl status jenkins  # Check if Jenkins is running
+
+or
+
+sudo service jenkins start
+sudo service jenkins status
+
+
+4: Access Jenkins Web Interface
+
+first allow custom tcp port 8080 by selecting anywhere with ipv4 with all zeros in security grops of that instance 
+http://your-server-ip(public-ip):8080
+
+5: Get Jenkins Admin Password
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+0d740e938eef4641b36cd509577aabfe
