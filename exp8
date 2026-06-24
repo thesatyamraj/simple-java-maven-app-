@@ -1,0 +1,174 @@
+Exp 8 
+
+
+1. Install Java on Master and Node
+
+
+sudo apt update
+sudo apt install openjdk-21-jdk -y
+
+
+2. Install Maven on Master
+wget https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
+sudo tar -xzf apache-maven-3.9.9-bin.tar.gz -C /opt/
+echo 'export PATH=/opt/apache-maven-3.9.9/bin:$PATH' | sudo tee /etc/profile.d/maven.sh
+source /etc/profile.d/maven.sh
+mvn -version
+
+6th wala:
+
+wget https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
+sudo tar -xvzf apache-maven-3.9.9-bin.tar.gz -C /opt/
+echo 'export M2_HOME=/opt/apache-maven-3.9.9' | sudo tee -a /etc/profile.d/maven.sh
+echo 'export PATH=$M2_HOME/bin:$PATH' | sudo tee -a /etc/profile.d/maven.sh
+source /etc/profile.d/maven.sh
+mvn -version
+
+
+3. Install Ansible on Master
+sudo apt install -y ansible
+ansible --version
+
+
+4. Install Jenkins on Master
+
+https://pkg.jenkins.io/debian-stable/
+
+5. Start Jenkins
+
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+
+
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+6. Open port master ip 8080 in AWS security group
+
+7. Open Jenkins in browser
+
+http://PUBLIC-IP:8080
+
+
+8. Get Jenkins password
+
+
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+
+9. Install suggested plugins in Jenkins
+
+10. Generate SSH key on Master
+ssh-keygen
+cd ~/.ssh
+ls
+cat id_ed25519.pub
+
+
+
+12. Paste key in Node machine
+
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHUO6EhXLhOyqlNr5WIdvRLex8CnAHVOVbRwxJJImZ7Y ubuntu@ip-172-31-31-30" >> ~/.ssh/authorized_keys
+
+Or 
+
+nano ~/.ssh/authorized_keys
+
+exit then go to master
+
+
+13. Copy SSH keys to Jenkins
+
+
+sudo mkdir -p /var/lib/jenkins/.ssh
+sudo cp /home/ubuntu/.ssh/id_ed25519 /var/lib/jenkins/.ssh/
+sudo cp /home/ubuntu/.ssh/id_ed25519.pub /var/lib/jenkins/.ssh/
+sudo chown -R jenkins:jenkins /var/lib/jenkins/.ssh
+sudo chmod 700 /var/lib/jenkins/.ssh
+
+14. Create inventory file
+
+nano ~/inventory.ini
+
+
+15. Add node IP inside inventory.ini
+
+[webserver]
+
+"node ip" ansible_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenkins/.ssh/id_ed25519 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[webserver]
+44.223.27.91 ansible_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenkins/.ssh/id_ed25519 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+16. Create deploy file
+
+
+nano ~/deploy.yml
+
+
+
+- name: Deploy Maven JAR to Target Server
+  hosts: webserver
+  tasks:
+    - name: Copy JAR file to Remote Server
+      copy:
+        src: /var/lib/jenkins/.m2/repository/com/mycompany/app/my-app/1.0-SNAPSHOT/my-app-1.0-SNAPSHOT.jar
+        dest: /home/ubuntu/app.jar
+        mode: '0755'
+
+    - name: Run Java Application
+      shell: nohup java -jar /home/ubuntu/app.jar > app.log 2>&1 &
+
+
+17. Paste deployment YAML
+
+18. Move files to Jenkins
+
+
+sudo mv ~/deploy.yml ~/inventory.ini /var/lib/jenkins/
+sudo chown jenkins:jenkins /var/lib/jenkins/deploy.yml /var/lib/jenkins/inventory.ini
+
+
+19. Install Maven + Ansible plugins in Jenkins
+
+20. Configure tools in Manage Jenkins → Tools
+
+7.jenkins configure-mavenansiblejenkins
+===============
+(i)under manage jenkins
+=======
+install maven, ansible plugins under plugins. 
+
+tools
+===========
+Ansible, /usr/bin/
+
+maven 3.9.9,/opt/apache-maven-3.9.9
+
+
+(ii)under pipeline configure at last write 
+======================================
+give git hub url: https://github.com/mvsanthi123/simple-java-maven-app.git
+
+bildsteps-- pls select  invoketoplevel maven taget-give name as maven and goal as clean install package
+
+excecute shell:ansible-playbook -i ~/inventory.ini ~/deploy.yml
+
+
+21. Create Freestyle Project in Jenkins
+
+22. Add GitHub repo URL - https://github.com/mvsanthi123/simple-java-maven-app.git
+
+23. Add Maven build step
+    Name :maven 3.9.9
+    Goal:clean install package
+
+
+24. Add Execute Shell step
+
+ansible-playbook -i ~/inventory.ini ~/deploy.yml
+
+
+25. Click Build Now
+
+26. On Node machine run
+    java -jar app.jar
