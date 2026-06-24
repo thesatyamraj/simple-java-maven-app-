@@ -1,0 +1,77 @@
+p11
+
+go to Microsoft entra id
+click add-> app registration
+give name and register
+
+under client credentials click 
+add a certificate
+click new client secret
+give descryption and select 1year
+click add
+
+then duplicate tab
+then in home tab search "key vaults" and click create
+click "create new" in resource group and give name
+give name for "key vault name" and hit next
+choose vault access policy for permission model
+click create under access policies
+click select all under "secret permissions"
+select the name that u have given before click next and review create
+select name under application and click next
+then next again (u will be in review create)
+if u will see error click previous and choose diff region (Malaysia west)
+if success then click create
+
+now when deployment complete
+click "go to resources"
+in left panel select "events"
+then in left pane under objects click "secrets"
+click "generate/import" and give name and secret value then hit create
+
+then duplicate tab, go back to home and select devops organisation and create new project
+then go to pipeline and create new pipeline and select "azure key vault demo" then run
+then when pipeline is created go to library under pipeline by hovering over
+click +variable group
+switch on "link secrets"
+in azure subscription select "azure for students" and authorize
+in "key vault name" click reload and authorize
+scroll down and under variable click "add"
+select ur secret and click ok
+and then hit save at the top
+
+now go to releases under pipeline hover
+click new pipeline
+select empty job and then cross it
+click "add an artifact"
+select GitHub username
+then in source at rightside 3dots select "azure keyvault demo"
+in default branch select "main"
+in default version select "latest"
+then click add
+then click "1 job" under stage 1
+in agent job right side of + click spread symbol
+then in agent pool select "azure pipelines"
+in agent specification select "windows latest"
+then hit save at top and click ok
+
+then in right side of agent job click + icon
+search "azure key vault" and add
+then search "powershell" and add
+
+select "azure key vault" choose azure for students in subscription and then choose key vault
+
+then select "powershell" under type select "inline"
+and add this line 
+Write-Host "$(sattsecret)"
+browse in previous tabs u will find the name it will be under ur vault name->secrets
+click save then ok
+
+now hit "create release" at top and hit create
+
+at top select the notification "Release-1" has been created
+
+wait until it succeeds 
+
+u can check logs under "stage 1" and open powershell scripts etc for output
+
