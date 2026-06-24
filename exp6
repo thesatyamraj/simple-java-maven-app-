@@ -1,0 +1,83 @@
+
+
+1: Update System and Install Java
+
+sudo apt update
+sudo apt install openjdk-21-jdk -y
+java -version
+
+2.Jenkins Installation on Ubuntu (Latest Method)
+
+https://pkg.jenkins.io/
+
+(copy paste all debian-stable)
+
+3: Start and Enable Jenkins
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+sudo systemctl status jenkins  # Check if Jenkins is running
+
+or
+
+sudo service jenkins start
+sudo service jenkins status
+
+
+4: Access Jenkins Web Interface
+
+first allow custom tcp port 8080 by selecting anywhere with ipv4 with all zeros in security grops of that instance 
+http://your-server-ip(public-ip):8080
+
+5: Get Jenkins Admin Password
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+0d740e938eef4641b36cd509577aabfe
+
+6.next install maven
+
+wget https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
+sudo tar -xvzf apache-maven-3.9.9-bin.tar.gz -C /opt/
+echo 'export M2_HOME=/opt/apache-maven-3.9.9' | sudo tee -a /etc/profile.d/maven.sh
+echo 'export PATH=$M2_HOME/bin:$PATH' | sudo tee -a /etc/profile.d/maven.sh
+source /etc/profile.d/maven.sh
+mvn -version
+
+
+7.
+click settings
+plugins
+available plugins
+search maven
+install
+
+again settings
+tools
+under maven type name: Maven
+uncheck install automatically
+/opt/apache-maven-3.9.9
+
+go to Jenkins
+on top left-> new item
+give a name
+select freestyle proj
+click ok
+
+select git under source code
+put simple-java-maven-app repo link
+
+under build step select invoke top-level maven targets
+select Maven version
+in goals type
+clean install
+
+click build now
+
+if not building click nodes then configure monitors then 1gb to 100mb and 2gb to 200mb then build again
+
+10. to check our jar file
+sudo su - jenkins
+cd /var/lib/jenkins/.m2/repository/com/mycompany/app/my-app/1.0-SNAPSHOT/
+
+11.to see the outcome of jar file
+java -jar my-app-1.0-SNAPSHOT.jar
+o/p: Hello world
